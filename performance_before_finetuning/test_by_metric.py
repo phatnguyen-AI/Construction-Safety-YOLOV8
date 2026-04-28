@@ -1,7 +1,9 @@
+"""
+Baseline Metric Evaluation
 
-'''
-======================KIỂM TRA HIỆU SUẤT TRƯỚC KHI FINETUNING BẰNG METRIC=======================
-'''
+Evaluates pretrained YOLOv8s on the validation set
+to establish quantitative baseline metrics (mAP, precision, recall).
+"""
 
 from ultralytics import YOLO
 
@@ -10,8 +12,5 @@ batch_size = 16
 img_size = 640
 
 model = YOLO("yolov8s.pt")
-
-# Đánh giá hiệu suất của mô hình trên tập validation.
 metrics = model.val(data=f"{PWD_dataset_folder}/data.yaml", batch=batch_size, imgsz=img_size)
-# In kết quả đánh giá.
 print(metrics)

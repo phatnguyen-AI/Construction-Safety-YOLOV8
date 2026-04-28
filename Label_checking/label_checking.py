@@ -1,34 +1,31 @@
-'''
-   ========================== KIỂM TRA NHÃN ==========================
-   Mục đích: Kiểm tra nhãn của các ảnh trong tập huấn luyện
-'''
+"""
+Label Quality Check
+
+Randomly samples training images and renders bounding boxes
+to visually verify annotation correctness before training.
+"""
+
 import glob
 import os
 from PIL import Image, ImageDraw
 import matplotlib.pyplot as plt
 import random
 
-# Đường dẫn đến thư mục chứa dataset.
-PWD_dataset_folder = "../Dataset/Phat_project-3"  # Dien vao duong dan den folder chua dataset
-
-# Số lượng ảnh mẫu để kiểm tra.
+PWD_dataset_folder = "../Dataset/Phat_project-3"
 n_sample = 20
 
-# Ánh xạ id lớp → tên lớp và màu sắc
+# Class ID to (name, color) mapping
 class_map = {
     0: ("head", "red"),
     1: ("helmet", "blue")
 }
 
-# Lấy danh sách tất cả các tệp ảnh .jpg trong thư mục huấn luyện.
 images = glob.glob(f"{PWD_dataset_folder}/train/images/*.jpg")
 
 for img_path in random.sample(images, n_sample):
     filename_wo_ext = os.path.splitext(os.path.basename(img_path))[0]
-
     label_path = os.path.join(f"{PWD_dataset_folder}/train/labels", filename_wo_ext + ".txt")
 
-    # Kiểm tra xem file label có tồn tại không.
     if os.path.exists(label_path):
         with open(label_path, 'r') as f:
             content = f.read().strip()
@@ -37,38 +34,30 @@ for img_path in random.sample(images, n_sample):
         draw = ImageDraw.Draw(img_)
         W, H = img_.size
 
-        # Nếu file label không rỗng.
         if content:
             for line in content.splitlines():
                 parts = line.split()
                 if len(parts) != 5:
                     continue
 
-                # Chuyển đổi các giá trị sang kiểu float.
                 class_id, x_center, y_center, w, h = map(float, parts)
 
-                # Chuyển tọa độ chuẩn hóa sang tọa độ pixel.
+                # Convert normalized YOLO coords to pixel coords
                 x_center *= W
                 y_center *= H
                 w *= W
                 h *= H
 
-                # Tính toán tọa độ góc trên bên trái và góc dưới bên phải của bounding box.
-                x_min = x_center - w/2
-                y_min = y_center - h/2
-                x_max = x_center + w/2
-                y_max = y_center + h/2
+                x_min = x_center - w / 2
+                y_min = y_center - h / 2
+                x_max = x_center + w / 2
+                y_max = y_center + h / 2
 
-                # Lấy tên class và màu sắc dựa vào class_id.
                 class_name, color = class_map.get(int(class_id), ("unknown", "white"))
-
-                # Vẽ hình chữ nhật (bounding box) lên ảnh.
                 draw.rectangle([x_min, y_min, x_max, y_max], outline=color, width=2)
+                draw.text((x_min, max(y_min - 12, 0)), class_name, fill=color)
 
-                # Vẽ tên class trên box.
-                draw.text((x_min, max(y_min-12, 0)), class_name, fill=color)
-
-        plt.figure(figsize=(8,8))
+        plt.figure(figsize=(8, 8))
         plt.imshow(img_)
         plt.axis('off')
         plt.show()

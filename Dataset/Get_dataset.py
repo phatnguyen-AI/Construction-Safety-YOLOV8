@@ -1,7 +1,7 @@
 from roboflow import Roboflow
 import os
 
-# Tải data từ Roboflow
+# Download dataset from Roboflow (version 3, YOLOv8 format)
 rf = Roboflow(api_key=os.getenv("ROBoflow_API_KEY"))
 project = rf.workspace("phat-tlik5").project("phat_project-mlezd")
 version = project.version(3)
