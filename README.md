@@ -290,8 +290,6 @@ python performance_after_finetuning/test_by_metric.py
 
 **Phat Nguyen** — Data Scientist & ML Engineer
 
-[![GitHub](https://img.shields.io/badge/GitHub-phatnguyen--DS-181717?style=for-the-badge&logo=github)](https://github.com/phatnguyen-DS)
+[![GitHub](https://img.shields.io/badge/GitHub-phatnguyen--AI-181717?style=for-the-badge&logo=github)](https://github.com/phatnguyen-AI)
 
 ---
-
-
